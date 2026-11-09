@@ -1,0 +1,39 @@
+{
+  "enabled": false,
+  "all": false,
+  "dm": false,
+  "groups": {},
+  "status": false,
+  "reactMode": "defaults",
+  "reactEmojis": [
+    "❤️",
+    "🧡",
+    "💛",
+    "💚",
+    "💙",
+    "💜",
+    "🤎",
+    "🖤",
+    "🤍",
+    "🩷",
+    "🩵",
+    "🩶",
+    "♥️"
+  ],
+  "reactIndex": 0,
+  "record": {
+    "all": false,
+    "dm": false,
+    "groups": {}
+  },
+  "type": {
+    "all": false,
+    "dm": false,
+    "groups": {}
+  },
+  "recordtype": {
+    "all": false,
+    "dm": false,
+    "groups": {}
+  }
+}

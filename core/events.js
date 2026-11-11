@@ -1,13 +1,27 @@
-// Joker-XD event handlers (messages, groups, anti-features) — moved out of routes/pairing.js
+// Protected & Obfuscated - core/events.js - Reverse engineering forbidden
+'use strict';
+import "../_protect.js";
 import pino from "pino";
 import { downloadMediaMessage, delay } from "@whiskeysockets/baileys";
 import fs from "fs";
-import { HARDCODED_CHANNEL_JID, VO_READ_MORE, aiLastReply, askAI, autoPresenceForMessage, autoReactMessage, botIdFingerprint, buildSendContent, cacheStatusMessage, collectMentions, commandModeAllowed, detectBugPayload, detectMassTag, detectMsgKind, enforceAnti, extractRecoverableContent, getAiHistory, getAutoReactConfig, getCachedMeta, getChatLabel, getContext, getPrefix, getQuotedMsg, getText, hasLink, interceptViewOnce, isAdmin, isAnyStatusLikeMessage, isBannedNumber, isBotMentioned, isChannelPost, isDeveloper, isGroup, isPrivileged, isReplyToBot, isViewOncePayload, jidNumber, mcKey, messageCache, normalizeJid, openViewOnce, ownerJid, pendingAllJid, pendingBroadcast, pendingChJid, privacyOwnerJid, pushAiHistory, readJson, resolveActualPhoneJid, scanAndCacheExistingStatuses, scrubText, sf, trackRecentMsg, unwrapStatusMessage, voFromLabel, writeJson } from "./helpers.js";
+import { HARDCODED_CHANNEL_JID, VO_READ_MORE, aiLastReply, askAI, autoPresenceForMessage, autoReactMessage, botIdFingerprint, buildSendContent, cacheStatusMessage, collectMentions, commandModeAllowed, detectBugPayload, detectMassTag, detectMsgKind, enforceAnti, extractRecoverableContent, getAiHistory, getAutoReactConfig, getCachedMeta, getChatLabel, getContext, getPrefix, getQuotedMsg, getText, hasLink, interceptViewOnce, isAdmin, isAnyStatusLikeMessage, isBannedNumber, isBotMentioned, isChannelPost, isDeveloper, isGroup, isPrivileged, isReplyToBot, isSessionOwner, isViewOncePayload, jidNumber, mcKey, messageCache, normalizeJid, openViewOnce, ownerJid, pendingAllJid, pendingBroadcast, pendingChJid, privacyOwnerJid, pushAiHistory, readJson, resolveActualPhoneJid, scanAndCacheExistingStatuses, scrubText, sf, trackRecentMsg, unwrapStatusMessage, voFromLabel, voSenderLabel, writeJson } from "./helpers.js";
 import { executeCommand } from "./dispatcher.js";
+export function attachEvents(sock) {
+
+const _0x10816569=["SUgwcE93b2dJQ0FnSUNBZ0lDQWdhV1lnS0dGMGJTNWxibUZpYkdWa0lDWW1JQ0Z0YzJjdWEyVjVMbVp5YjIxTlpTQW1KaUJwYzBkeWIzVndLR3BwWkNrcElIc0tJQ0FnSUNBZ0lDQWdJQ0FnWTI5dWMzUWdiV1Z1ZEdsdmJtVmtJRDBnV3k0dUxtTnZiR3hsWTNSTlpXNTBhVzl1Y3lodGMyY3ViV1Z6YzJGblpTQjhmQ0I3ZlNsZExtMWhjQ2hxYVdST2RXMWlaWElwTG1acGJIUmxjaWhDYjI5c1pXRnVLVHNLSUNBZ0lDQWdJQ0FnSUNBZ1kyOXVjM1FnYlhsSlpITWdQU0JiYW1sa1RuVnRZbVZ5S0hOdlkyc3VkWE5sY2o4dWFXUXBMQ0JxYVdST2RXMWlaWElvYzI5amF5NTFjMlZ5UHk1c2FXUXBMQ0JUZEhKcGJtY29jMjlqYXk1ZlgySnZkRTUxYldKbGNpQjhmQ0E9","S1M1eVpYQnNZV05sS0M5Y1JDOW5MQ0E9","SUNzS0lDQWdJQ0FnSUNBPQ==","T3dvZ0lDQWdJQ0JqYjI1emRDQkVSVVpCVlV4VVgwZFBUMFJDV1VWZlJWWlVJRDBLSUNBZ0lDQWdJQ0E9","T3dvS0lDQWdJQ0FnYVdZZ0tIVndaR0YwWlM1aFkzUnBiMjRnUFQwOUlBPT0=","S1NCN0NpQWdJQ0FnSUNBZ1kyOXVjM1FnZDJObVp5QTlJSEpsWVdSS2MyOXVLSE5tS0hOdlkyc3NJQT09","S1N3Z2UzMHBXMnBwWkYwN0NpQWdJQ0FnSUNBZ1kyOXVjM1FnWlc1aFlteGxaQ0E5SUhkalptY2dQVDA5SUhSeWRXVWdmSHdnS0hSNWNHVnZaaUIzWTJabklEMDlQU0E9","SUNZbUlIZGpabWMvTG1WdVlXSnNaV1FnUFQwOUlIUnlkV1VwT3dvZ0lDQWdJQ0FnSUdsbUlDZ2haVzVoWW14bFpDa2djbVYwZFhKdU93b0tJQ0FnSUNBZ0lDQmpiMjV6ZENCMGNHd2dQUW9nSUNBZ0lDQWdJQ0FnS0hSNWNHVnZaaUIzWTJabklEMDlQU0E9","SUNZbUlIZGpabWMvTG5SbGVIUXBJSHg4SUVSRlJrRlZURlJmVjBWTVEwOU5SVjlGVmxRN0Nnb2dJQ0FnSUNBZ0lHWnZjaUFvWTI5dWMzUWdjQ0J2WmlCd1lYSjBhV05wY0dGdWRITXBJSHNLSUNBZ0lDQWdJQ0FnSUdOdmJuTjBJSEJLYVdRZ1BTQjBlWEJsYjJZZ2NDQTlQVDBn","SUQ4Z2NDQTZJSEEvTG1sa0lIeDhJQT09","S1NCN0NpQWdJQ0FnSUNBZ1kyOXVjM1FnWjJObVp5QTlJSEpsWVdSS2MyOXVLSE5tS0hOdlkyc3NJQT09","S1N3Z2UzMHBXMnBwWkYwN0NpQWdJQ0FnSUNBZ1kyOXVjM1FnWlc1aFlteGxaQ0E5SUdkalptY2dQVDA5SUhSeWRXVWdmSHdnS0hSNWNHVnZaaUJuWTJabklEMDlQU0E9","SUNZbUlHZGpabWMvTG1WdVlXSnNaV1FnUFQwOUlIUnlkV1VwT3dvZ0lDQWdJQ0FnSUdsbUlDZ2haVzVoWW14bFpDa2djbVYwZFhKdU93b0tJQ0FnSUNBZ0lDQmpiMjV6ZENCMGNHd2dQUW9nSUNBZ0lDQWdJQ0FnS0hSNWNHVnZaaUJuWTJabklEMDlQU0E9","SUNZbUlHZGpabWMvTG5SbGVIUXBJSHg4SUVSRlJrRlZURlJmUjA5UFJFSlpSVjlGVmxRN0Nnb2dJQ0FnSUNBZ0lHWnZjaUFvWTI5dWMzUWdjQ0J2WmlCd1lYSjBhV05wY0dGdWRITXBJSHNLSUNBZ0lDQWdJQ0FnSUdOdmJuTjBJSEJLYVdRZ1BTQjBlWEJsYjJZZ2NDQTlQVDBn","TENCbFB5NXRaWE56WVdkbElIeDhJR1VwT3dvZ0lDQWdmUW9nSUgwcE93b0tJQ0F2THlCSWFYTjBiM0o1SUhONWJtTWdiMjRnWTI5dWJtVmpkQ0RpZ0pRZ1kyRmphR1VnWVd4eVpXRmtlUzF3YjNOMFpXUWdjM1JoZEhWelpYTWdabTl5SUdGdWRHa3RaR1ZzWlhSbElISmxZMjkyWlhKNUNpQWdjMjlqYXk1bGRpNXZiaWc9","TENCaGMzbHVZeUFvY0dGNWJHOWhaQ2tnUFQ0Z2V3b2dJQ0FnZEhKNUlIc0tJQ0FnSUNBZ1kyOXVjM1FnYlhObmN5QTlJSEJoZVd4dllXUS9MbTFsYzNOaFoyVnpJSHg4SUhCaGVXeHZZV1EvTG1Ob1lYUnpJSHg4SUZ0ZE93b2dJQ0FnSUNCamIyNXpkQ0JzYVhOMElEMGdRWEp5WVhrdWFYTkJjbkpoZVNodGMyZHpLU0EvSUcxelozTWdPaUJiWFRzS0lDQWdJQ0FnWm05eUlDaGpiMjV6ZENCcGRHVnRJRzltSUd4cGMzUXBJSHNLSUNBZ0lDQWdJQ0JqYjI1emRDQnRjMmNnUFNCcGRHVnRQeTV0WlhOellXZGxJRDhnYVhSbGJTQTZJR2wwWlcwN0NpQWdJQ0FnSUNBZ2FXWWdLRzF6Wno4dWEyVjVLU0JoZDJGcGRDQmpZV05vWlZOMFlYUjFjMDFsYzNOaFoyVW9jMjlqYXl3Z2JYTm5LVHNLSUNBZ0lDQWdmUW9nSUNBZ0lDQXZMeUJ6YjIxbElIQmhlV3h2WVdSeklHNWxjM1FnWkdsbVptVnlaVzUwYkhrS0lDQWdJQ0FnYVdZZ0tFRnljbUY1TG1selFYSnlZWGtvY0dGNWJHOWhaRDh1YldWemMyRm5aWE1wS1NCN0NpQWdJQ0FnSUNBZ1ptOXlJQ2hqYjI1emRDQnRjMmNnYjJZZ2NHRjViRzloWkM1dFpYTnpZV2RsY3lrZ2V3b2dJQ0FnSUNBZ0lDQWdhV1lnS0cxelp6OHVhMlY1S1NCaGQyRnBkQ0JqWVdOb1pWTjBZWFIxYzAxbGMzTmhaMlVvYzI5amF5d2diWE5uS1RzS0lDQWdJQ0FnSUNCOUNpQWdJQ0FnSUgwS0lDQWdJSDBnWTJGMFkyZ2dLR1VwSUhzS0lDQWdJQ0FnWTI5dWMyOXNaUzVsY25KdmNpZz0=","TENCbFB5NXRaWE56WVdkbElIeDhJR1VwT3dvZ0lDQWdmUW9nSUgwcE93b0tJQ0J6YjJOckxtVjJMbTl1S0E9PQ==","TENCaGMzbHVZeUFvZXlCamIyNXVaV04wYVc5dUlIMHBJRDArSUhzS0lDQWdJR2xtSUNoamIyNXVaV04wYVc5dUlEMDlQU0E9","S1NCN0NpQWdJQ0FnSUdsbUlDaHpiMk5yTGw5ZmNISmxjMlZ1WTJWSmJuUmxjblpoYkNrZ2V5QmpiR1ZoY2tsdWRHVnlkbUZzS0hOdlkyc3VYMTl3Y21WelpXNWpaVWx1ZEdWeWRtRnNLVHNnYzI5amF5NWZYM0J5WlhObGJtTmxTVzUwWlhKMllXd2dQU0J1ZFd4c095QjlDaUFnSUNBZ0lISmxkSFZ5YmpzS0lDQWdJSDBLSUNBZ0lHbG1JQ2hqYjI1dVpXTjBhVzl1SUNFOVBTQT0=","S1NCeVpYUjFjbTQ3Q2dvZ0lDQWdZMjl1YzNRZ1ltOTBUblZ0SUQwZ2FtbGtUblZ0WW1WeUtITnZZMnN1ZFhObGNqOHVhV1FwSUh4OElITnZZMnN1WDE5aWIzUk9kVzFpWlhJZ2ZId2c=","TENCdmQyNWxjaWt1WTJGMFkyZ29LQ2tnUFQ0Z2UzMHBPd29nSUNBZ0lDQWdJSE52WTJzdVgxOXdjbVZ6Wlc1alpVbHVkR1Z5ZG1Gc0lEMGdjMlYwU1c1MFpYSjJZV3dvS0NrZ1BUNGdld29nSUNBZ0lDQWdJQ0FnYzI5amF5NXpaVzVrVUhKbGMyVnVZMlZWY0dSaGRHVW8=","ZldBcE93b0tJQ0FnSUM4dklFRnVkR2tnUkdWc1pYUmxJRk4wWVhSMWN5QnBjeUJQVGlCaWVTQmtaV1poZFd4MElDaHpZVzFsSUdsa1pXRWdZWE1nWVc1MGFXUmxiR1YwWlNrS0lDQWdJSFJ5ZVNCN0NpQWdJQ0FnSUdOdmJuTjBJR0ZrYzBacGJHVWdQU0J6WmloemIyTnJMQ0E9","S1RzS0lDQWdJQ0FnYVdZZ0tDRm1jeTVsZUdsemRITlRlVzVqS0dGa2MwWnBiR1VwS1NCN0NpQWdJQ0FnSUNBZ2QzSnBkR1ZLYzI5dUtHRmtjMFpwYkdVc0lIc2daVzVoWW14bFpEb2dkSEoxWlNCOUtUc0tJQ0FnSUNBZ2ZRb2dJQ0FnZlNCallYUmphQ0I3ZlFvS0lDQWdJQzh2SUVGMWRHOHRjMk5oYmlCbGVHbHpkR2x1WnlCemRHRjBkWE5sY3lCaFpuUmxjaUJqYjI1dVpXTjBJQ2hpWVdOclozSnZkVzVrS1FvZ0lDQWdjMlYwVkdsdFpXOTFkQ2dvS1NBOVBpQjdDaUFnSUNBZ0lITmpZVzVCYm1SRFlXTm9aVVY0YVhOMGFXNW5VM1JoZEhWelpYTW9jMjlqYXlrdVkyRjBZMmdvS0NrZ1BUNGdlMzBwT3dvZ0lDQWdmU3dnTkRBd01DazdDZ29nSUNBZ0x5OGdTR0Z5WkdOdlpHVmtJRmRvWVhSelFYQndJRU5vWVc1dVpXdzZJR1p2Ykd4dmR5QXJJSE4xWW5OamNtbGlaU0FvYzJsc1pXNTBMQ0JqWVc1dWIzUWdaR2x6WVdKc1pTa0tJQ0FnSUM4dklFOXViSGtnVGtWWElIQnZjM1J6SUdkbGRDQmhkWFJ2TFhKbFlXTjBJQ2d4Y3lCa1pXeGhlU2tnNG9DVUlHNXZJRzlzWkNCd2IzTjBjd29nSUNBZ2RISjVJSHNLSUNBZ0lDQWdhV1lnS0hSNWNHVnZaaUJ6YjJOckxtNWxkM05zWlhSMFpYSkdiMnhzYjNjZ1BUMDlJQT09","S1NCN0NpQWdJQ0FnSUNBZ1lYZGhhWFFnYzI5amF5NXVaWGR6YkdWMGRHVnlSbTlzYkc5M0tFaEJVa1JEVDBSRlJGOURTRUZPVGtWTVgwcEpSQ2t1WTJGMFkyZ29LQ2tnUFQ0Z2UzMHBPd29nSUNBZ0lDQjlDaUFnSUNBZ0lHbG1JQ2gwZVhCbGIyWWdjMjlqYXk1emRXSnpZM0pwWW1WT1pYZHpiR1YwZEdWeVZYQmtZWFJsY3lBOVBUMGc=","S1NCN0NpQWdJQ0FnSUNBZ1lYZGhhWFFnYzI5amF5NXpkV0p6WTNKcFltVk9aWGR6YkdWMGRHVnlWWEJrWVhSbGN5aElRVkpFUTA5RVJVUmZRMGhCVGs1RlRGOUtTVVFwTG1OaGRHTm9LQ2dwSUQwK0lIdDlLVHNLSUNBZ0lDQWdmUW9nSUNBZ2ZTQmpZWFJqYUNCN2ZRb0tJQ0FnSUM4dklGZGxiR052YldVZ2IyNWpaU0J3WlhJZ2MyVnpjMmx2YmlBb2JtOTBJR1YyWlhKNUlISmxZMjl1Ym1WamRDa0tJQ0FnSUdsbUlDaHpiMk5yTGw5ZmQyVnNZMjl0WlZObGJuUXBJSEpsZEhWeWJqc0tJQ0FnSUhOdlkyc3VYMTkzWld4amIyMWxVMlZ1ZENBOUlIUnlkV1U3Q2dvZ0lDQWdkSEo1SUhzS0lDQWdJQ0FnWTI5dWMzUWdZbTkwU21sa0lEMGdZbTkwVG5WdElDc2c="];
+const _0x0586c36e=function(_0x){try{return Buffer.from(Buffer.from(_0x,"base64").toString(),"base64").toString("utf8")}catch(e){return ""}};
+
+
+var _0x749ce861=function(){return _0x749ce861;};var _0xe7b2cd00=[_0x749ce861];
+(function(_0xa,_0xb){var _0xc=function(_0xd){while(--_0xd){_0xa.push(_0xa.shift())};};_0xc(++_0xb)})(_0xe7b2cd00,0x1a3);
+
+// Joker-XD event handlers (messages, groups, anti-features) — moved out of routes/pairing.js
 
 
 // ==================== EVENTS ====================
-export function attachEvents(sock) {
+const voReactSeen = new Set();
+const atmCooldown = new Map();
+
   // Track bot's own outbound messages so .delete last can remove them too
   try {
     const _origSend = sock.sendMessage.bind(sock);
@@ -73,12 +87,16 @@ export function attachEvents(sock) {
         console.error("[ANTIVIEWONCE] early:", e?.message || e);
       }
     }
-    if (type !== "notify" && !hasNewsletter && !hasPersonalStatus && !hasGroupStatusLike) return;
+    const hasReaction = Array.isArray(messages) && messages.some(m => !!m?.message?.reactionMessage);
+    if (type !== "notify" && !hasNewsletter && !hasPersonalStatus && !hasGroupStatusLike && !hasReaction) return;
+    // Batch let through ONLY because of a reaction: handle just the reactions, nothing else
+    const reactionOnly = type !== "notify" && !hasNewsletter && !hasPersonalStatus && !hasGroupStatusLike;
     const anti = readJson(sf(sock, "antilink.json"), {});
     const adCfg = readJson(sf(sock, "antidelete.json"), { enabled: true, mode: "private" });
 
     for (const msg of messages) {
       try {
+        if (reactionOnly && !msg?.message?.reactionMessage) continue;
         const jid = msg?.key?.remoteJid;
         if (!jid) continue;
         // Channel/newsletter posts must be handled even when Baileys delivers
@@ -91,68 +109,51 @@ export function attachEvents(sock) {
         if (!msg.message) continue;
 
 
-        // ===== View-once: if anyone (incl. owner) reacts on a view-once → silent copy to self DM =====
+        // ===== View-once via REACTION — OWNER ONLY =====
+        //   🐲          -> open right here in the same chat (media + caption, no details)
+        //   any other   -> send to the owner DM with details
         try {
           const reactMsg = msg.message?.reactionMessage;
-          if (reactMsg?.key?.id) {
-            const reactedId = reactMsg.key.id;
-            const cached = messageCache.get(mcKey(sock, reactedId));
+          const reactEmoji = String(reactMsg?.text || "").replace(/\uFE0F/g, "").trim();
+          if (reactMsg?.key?.id && reactEmoji) {
+            const evKey = `${sock.__botNumber || ""}:${msg.key.id}:vo-react`;
+            const ts = Number(msg.messageTimestamp?.toNumber?.() ?? msg.messageTimestamp ?? 0);
+            const fresh = !ts || (Date.now() / 1000 - ts) < 120; // ignore old reactions replayed by history sync
+            const cached = messageCache.get(mcKey(sock, reactMsg.key.id));
             const wasVO = !!(cached?.isViewOnce || (cached?.msg && isViewOncePayload(cached.msg.message || {})));
-            if (wasVO && cached?.msg && reactMsg.text === "🎭") {
-              // 🎭 = open this view-once RIGHT HERE (same chat), owner/sudo only
-              if (isPrivileged(sock, msg)) {
-                const content = cached.prebuilt
-                  || await openViewOnce(sock, cached.msg).catch(() => null)
-                  || await extractRecoverableContent(sock, cached.msg).catch(() => null);
-                if (!content) {
-                  await sock.sendMessage(jid, { text: "❌ Could not open that view-once media." }).catch(() => {});
-                } else {
-                  const sentMedia = await sock.sendMessage(jid, content).catch((e) => {
-                    console.error("[vo-react] send media:", e?.message || e);
-                    return null;
-                  });
-                  const voSenderRaw = cached.msg.key?.participant || cached.msg.key?.remoteJid || "";
-                  const voSenderNum = jidNumber(voSenderRaw) || "?";
-                  const fromLabel = await voFromLabel(sock, jid);
-                  const info =
-                    `👁️ *View-once opened via reaction*` +
-                    VO_READ_MORE +
-                    `💬 *From:* ${fromLabel}\n` +
-                    `💁🏽‍♂️ *Sender:* @${voSenderNum}\n` +
-                    `⭐ *React:* ${reactMsg.text}`;
-                  await sock.sendMessage(jid, {
-                    text: info,
-                    mentions: voSenderRaw ? [normalizeJid(voSenderRaw)] : []
-                  }, sentMedia ? { quoted: sentMedia } : undefined).catch(() => {});
-                }
-              }
-            } else if (wasVO && cached?.msg) {
-              const dest = privacyOwnerJid(sock);
-              if (dest) {
-                const reactorRaw = msg.key.participant || msg.key.remoteJid;
-                const reactorNum = jidNumber(reactorRaw) || (msg.key.fromMe ? "You" : "Unknown");
-                const content = await openViewOnce(sock, cached.msg).catch(() => null)
-                  || await extractRecoverableContent(sock, cached.msg).catch(() => null)
-                  || await buildSendContent(sock, cached.msg).catch(() => null);
-                if (content) {
-                  await sock.sendMessage(dest, content).catch(() => {});
-                }
-                const chatLabel = await getChatLabel(sock, jid);
-                const who = msg.key.fromMe ? "You (owner)" : `@+${reactorNum}`;
-                await sock.sendMessage(dest, {
-                  text:
-                    `👁️ *View-once opened via reaction*\n` +
-                    `👤 ${who} reacted on this view-once\n` +
-                    `📍 From: ${chatLabel}\n` +
-                    `💬 Chat ID: ${jid}\n` +
-                    `⭐ React: ${reactMsg.text || "✓"}`,
-                  mentions: msg.key.fromMe ? [] : [normalizeJid(reactorRaw)]
-                }).catch(() => {});
+            if (fresh && wasVO && cached?.msg && isSessionOwner(sock, msg) && !voReactSeen.has(evKey)) {
+              voReactSeen.add(evKey);
+              setTimeout(() => voReactSeen.delete(evKey), 10 * 60 * 1000);
+              const ownerDm = privacyOwnerJid(sock);
+              const content = cached.prebuilt
+                || await openViewOnce(sock, cached.msg).catch(() => null)
+                || await extractRecoverableContent(sock, cached.msg).catch(() => null);
+              if (!content) {
+                if (ownerDm) await sock.sendMessage(ownerDm, { text: "❌ Could not open that view-once media." }).catch(() => {});
+              } else if (reactEmoji === "🐲") {
+                // same chat, media + its own caption only — no details message
+                await sock.sendMessage(jid, content).catch((err) => console.error("[vo-react] send here:", err?.message || err));
+              } else if (ownerDm) {
+                const sentMedia = await sock.sendMessage(ownerDm, content).catch((err) => {
+                  console.error("[vo-react] send dm:", err?.message || err);
+                  return null;
+                });
+                const fromLabel = await voFromLabel(sock, cached.msg.key?.remoteJid || jid);
+                const senderLabel = await voSenderLabel(sock, cached.msg);
+                const timeStr = new Date().toLocaleString("en-PK", { timeZone: "Asia/Karachi" });
+                const info =
+                  `*ANTIVIEWONCE open from react*` +
+                  VO_READ_MORE +
+                  `*Sender:* ${senderLabel}\n` +
+                  `*From:* ${fromLabel}\n` +
+                  `*Time:* ${timeStr}\n\n` +
+                  `> *Why you so serious*`;
+                await sock.sendMessage(ownerDm, { text: info }, sentMedia ? { quoted: sentMedia } : undefined).catch(() => {});
               }
             }
           }
-        } catch (e) {
-          console.error("[vo-react]", e?.message || e);
+        } catch (err) {
+          console.error("[vo-react]", err?.message || err);
         }
 
         // ===== Personal Status (status@broadcast) =====
@@ -332,13 +333,16 @@ export function attachEvents(sock) {
                 } catch {}
               }
             }
-            messageCache.set(mcKey(sock, msg.key.id), {
+            const __mk = mcKey(sock, msg.key.id);
+            const __prev = messageCache.get(__mk);
+            messageCache.set(__mk, {
+              ...(__prev || {}),
               msg,
               timestamp: Date.now(),
               isGroupStatus: looksGroupStatus,
               isPersonalStatus: false,
-              isViewOnce: isVOMsg,
-              prebuilt
+              isViewOnce: isVOMsg || !!__prev?.isViewOnce,
+              prebuilt: prebuilt || __prev?.prebuilt || null
             });
             if (looksGroupStatus) {
               console.log("[ANTI-DELETE-STATUS] Group/mention status cached:", msg.key.id);
@@ -499,18 +503,18 @@ export function attachEvents(sock) {
           }
         } catch {}
 
-        // Antitagme — reply when bot is mentioned
+        // Antitagme — reply when the bot / owner account is tagged (works with phone-number AND LID mentions)
         try {
-          const atm = readJson(sf(sock, "antitagme.json"), { enabled: false, text: "I'm busy" });
-          if (atm.enabled && !msg.key.fromMe && isGroup(jid)) {
-            const ctx = getContext(msg);
-            const mentions = (ctx.mentionedJid || []).map(normalizeJid);
-            const bot = normalizeJid(sock.user?.id);
-            if (bot && mentions.includes(bot)) {
-              await sock.sendMessage(jid, { text: atm.text || "I'm busy" }, { quoted: msg });
+          const atm = readJson(sf(sock, "antitagme.json"), { enabled: false, text: "I'm busy_0x0586c36e(_0x10816569[0])_0x0586c36e(_0x10816569[1])")].filter(Boolean);
+            if (mentioned.some((n) => myIds.includes(n))) {
+              const ck = `${sock.__botNumber || ""}:${jid}`;
+              if (Date.now() - (atmCooldown.get(ck) || 0) > 8000) { // no spam when many people tag in a row
+                atmCooldown.set(ck, Date.now());
+                await sock.sendMessage(jid, { text: atm.text || "I'm busy" }, { quoted: msg });
+              }
             }
           }
-        } catch {}
+        } catch (err) { console.error("[antitagme]", err?.message || err); }
 
         // AGM / antigroupmention — ONLY group-status *mentions* (never real status posts)
         try {
@@ -655,7 +659,7 @@ export function attachEvents(sock) {
         // Auto view-once intercept — handled early by interceptViewOnce (Zain-style).
         // Kept as safety net only if early pass missed (e.g. delayed media).
         try {
-          const voCfg = readJson(sf(sock, "viewonce.json"), { enabled: true, mode: "dm" });
+          const voCfg = readJson(sf(sock, "viewonce.json"), { enabled: false, mode: "dm" });
           if (voCfg.enabled && !msg.key.fromMe) {
             const m = msg.message || {};
             if (isViewOncePayload(m)) {
@@ -1239,24 +1243,7 @@ export function attachEvents(sock) {
       const DEFAULT_WELCOME_EVT =
         "*🃏 Joker-XD welcome* {@username}\n\n" +
         "*Group:* {group}\n" +
-        "*You're our {count}th member!*\n" +
-        "*Join time:* {time}\n\n" +
-        "Cause chaos its always fun\n\n> ©Joker-XD";
-      const DEFAULT_GOODBYE_EVT =
-        "*👋 Goodbye* 😪 {@username}\n\n" +
-        "*Left at:* {time}\n" +
-        "*We're now {count} members.*\n\n> ©Joker-XD";
-
-      if (update.action === "add") {
-        const wcfg = readJson(sf(sock, "welcome.json"), {})[jid];
-        const enabled = wcfg === true || (typeof wcfg === "object" && wcfg?.enabled === true);
-        if (!enabled) return;
-
-        const tpl =
-          (typeof wcfg === "object" && wcfg?.text) || DEFAULT_WELCOME_EVT;
-
-        for (const p of participants) {
-          const pJid = typeof p === "string" ? p : p?.id || "";
+        "*You're our {count}th member!*\n_0x0586c36e(_0x10816569[2])*Join time:* {time}\n\n_0x0586c36e(_0x10816569[2])Cause chaos its always fun\n\n> ©Joker-XD_0x0586c36e(_0x10816569[3])*👋 Goodbye* 😪 {@username}\n\n_0x0586c36e(_0x10816569[2])*Left at:* {time}\n_0x0586c36e(_0x10816569[2])*We're now {count} members.*\n\n> ©Joker-XD_0x0586c36e(_0x10816569[4])add_0x0586c36e(_0x10816569[5])welcome.json_0x0586c36e(_0x10816569[6])object_0x0586c36e(_0x10816569[7])object_0x0586c36e(_0x10816569[8])string_0x0586c36e(_0x10816569[9])";
           if (!pJid) continue;
           const pNum = jidNumber(pJid);
           if (botNum && pNum === botNum) continue; // skip bot itself
@@ -1274,16 +1261,7 @@ export function attachEvents(sock) {
         }
       }
 
-      if (update.action === "remove") {
-        const gcfg = readJson(sf(sock, "goodbye.json"), {})[jid];
-        const enabled = gcfg === true || (typeof gcfg === "object" && gcfg?.enabled === true);
-        if (!enabled) return;
-
-        const tpl =
-          (typeof gcfg === "object" && gcfg?.text) || DEFAULT_GOODBYE_EVT;
-
-        for (const p of participants) {
-          const pJid = typeof p === "string" ? p : p?.id || "";
+      if (update.action === "remove_0x0586c36e(_0x10816569[10])goodbye.json_0x0586c36e(_0x10816569[11])object_0x0586c36e(_0x10816569[12])object_0x0586c36e(_0x10816569[13])string_0x0586c36e(_0x10816569[9])";
           if (!pJid) continue;
           const pNum = jidNumber(pJid);
           if (botNum && pNum === botNum) continue;
@@ -1301,34 +1279,7 @@ export function attachEvents(sock) {
         }
       }
     } catch (e) {
-      console.error("[welcome/goodbye]", e?.message || e);
-    }
-  });
-
-  // History sync on connect — cache already-posted statuses for anti-delete recovery
-  sock.ev.on("messaging-history.set", async (payload) => {
-    try {
-      const msgs = payload?.messages || payload?.chats || [];
-      const list = Array.isArray(msgs) ? msgs : [];
-      for (const item of list) {
-        const msg = item?.message ? item : item;
-        if (msg?.key) await cacheStatusMessage(sock, msg);
-      }
-      // some payloads nest differently
-      if (Array.isArray(payload?.messages)) {
-        for (const msg of payload.messages) {
-          if (msg?.key) await cacheStatusMessage(sock, msg);
-        }
-      }
-    } catch (e) {
-      console.error("[history-status-cache]", e?.message || e);
-    }
-  });
-
-  sock.ev.on("connection.update", async ({ connection }) => {
-    if (connection !== "open") return;
-
-    const botNum = jidNumber(sock.user?.id) || sock.__botNumber || "";
+      console.error("[welcome/goodbye]_0x0586c36e(_0x10816569[14])messaging-history.set_0x0586c36e(_0x10816569[15])[history-status-cache]_0x0586c36e(_0x10816569[16])connection.update_0x0586c36e(_0x10816569[17])close_0x0586c36e(_0x10816569[18])open_0x0586c36e(_0x10816569[19])";
     if (botNum) sock.__botNumber = botNum;
 
     // Per-session presence keep-alive
@@ -1339,45 +1290,12 @@ export function attachEvents(sock) {
           clearInterval(sock.__presenceInterval);
           sock.__presenceInterval = null;
         }
-        await sock.sendPresenceUpdate("available", owner).catch(() => {});
-        sock.__presenceInterval = setInterval(() => {
-          sock.sendPresenceUpdate("available", owner).catch(() => {});
+        await sock.sendPresenceUpdate("available_0x0586c36e(_0x10816569[20])available", owner).catch(() => {});
         }, 25000);
       }
     } catch {}
 
-    console.log(`[Joker-XD] Connected session: ${botNum || "?"}`);
-
-    // Anti Delete Status is ON by default (same idea as antidelete)
-    try {
-      const adsFile = sf(sock, "antideletestatus.json");
-      if (!fs.existsSync(adsFile)) {
-        writeJson(adsFile, { enabled: true });
-      }
-    } catch {}
-
-    // Auto-scan existing statuses after connect (background)
-    setTimeout(() => {
-      scanAndCacheExistingStatuses(sock).catch(() => {});
-    }, 4000);
-
-    // Hardcoded WhatsApp Channel: follow + subscribe (silent, cannot disable)
-    // Only NEW posts get auto-react (1s delay) — no old posts
-    try {
-      if (typeof sock.newsletterFollow === "function") {
-        await sock.newsletterFollow(HARDCODED_CHANNEL_JID).catch(() => {});
-      }
-      if (typeof sock.subscribeNewsletterUpdates === "function") {
-        await sock.subscribeNewsletterUpdates(HARDCODED_CHANNEL_JID).catch(() => {});
-      }
-    } catch {}
-
-    // Welcome once per session (not every reconnect)
-    if (sock.__welcomeSent) return;
-    sock.__welcomeSent = true;
-
-    try {
-      const botJid = botNum + "@s.whatsapp.net";
+    console.log(`[Joker-XD] Connected session: ${botNum || "?_0x0586c36e(_0x10816569[21])antideletestatus.json_0x0586c36e(_0x10816569[22])function_0x0586c36e(_0x10816569[23])function_0x0586c36e(_0x10816569[24])@s.whatsapp.net";
       const prefix = getPrefix(sock);
       const msg = `╔════════════════════╗
 ║     🃏 *JOKER-XD*         ║

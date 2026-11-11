@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node setup-runtime.js && npm install --no-audit --no-fund && node index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "express": "4.21.2",
@@ -21,6 +21,6 @@
     "ruhend-scraper": "^10.0.3",
     "fb-downloader-scrapper": "^3.0.1",
     "sharp": "^0.33.5",
-    "@whiskeysockets/baileys": "file:./baileys"
+    "@whiskeysockets/baileys": "6.7.18"
   }
 }

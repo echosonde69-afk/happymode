@@ -14,9 +14,12 @@ export default {
   },
   async run(__ctx) {
     const { sock, msg, cmd, args, jid, send, react } = __ctx;
-    const q = args.join(" ").trim();
+    const list = [...args];
+    let asDoc = false;
+    if (/^(doc|document)$/i.test(list[list.length - 1] || "")) { asDoc = true; list.pop(); }
+    const q = list.join(" ").trim();
     if (!q) {
-      await send(`❌ Usage: .${cmd} <name or YouTube link>`);
+      await send(`❌ Usage: .${cmd} <name or YouTube link> (add doc at the end for document)`);
       return { __done: true, value: (true) };
     }
     try {
@@ -50,9 +53,10 @@ export default {
       await sendMedia(
         sock,
         jid,
-        "video",
+        asDoc ? "document" : "video",
         data.download,
         {
+          ...(asDoc ? { mimetype: "video/mp4" } : {}),
           caption: cap,
           fileName: `${String(finalTitle).replace(/[^\w\s-]/gi, "").slice(0, 60) || "video"}.mp4`
         },

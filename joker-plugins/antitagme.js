@@ -1,6 +1,8 @@
 // Joker plugin: antitagme  — commands: antitagme
-// (extracted from routes/pairing.js line 8196; behaviour unchanged)
-import { commandPrivileged, readJson, sf, writeJson } from "../core/helpers.js";
+// When someone tags the owner/bot account in a group, the bot replies with your saved sentence.
+//   .antitagme on | off
+//   .antitagme set <sentence>      (multi-line works; or reply to a message with .antitagme set)
+import { commandPrivileged, getQuotedMsg, getText, readJson, sf, writeJson } from "../core/helpers.js";
 
 export default {
   name: "antitagme",
@@ -12,20 +14,40 @@ export default {
     return (cmd === "antitagme");
   },
   async run(__ctx) {
-    const { sock, msg, args, send } = __ctx;
+    const { sock, msg, args, body, send } = __ctx;
     if (!commandPrivileged(sock, msg, send)) return { __done: true, value: (true) };
+    const file = sf(sock, "antitagme.json");
     const v = String(args[0] || "").toLowerCase();
-    const cfg = readJson(sf(sock, "antitagme.json"), { enabled: false, text: "I'm busy" });
-    if (v === "on") { cfg.enabled = true; writeJson(sf(sock, "antitagme.json"), cfg); await send("✅ Antitagme ON — reply: I'm busy"); return { __done: true, value: (true) }; }
-    if (v === "off") { cfg.enabled = false; writeJson(sf(sock, "antitagme.json"), cfg); await send("✅ Antitagme OFF"); return { __done: true, value: (true) }; }
-    if (v === "set") {
-      const t = args.slice(1).join(" ").trim() || "I'm busy";
-      cfg.text = t; cfg.enabled = true; writeJson(sf(sock, "antitagme.json"), cfg);
-      await send(`✅ Antitagme text: *${t}*`);
+    const cfg = readJson(file, { enabled: false, text: "I'm busy" });
+    const save = async () => {
+      try { writeJson(file, cfg); return true; }
+      catch (e) { await send(`❌ Save failed: ${e?.message || e}`); return false; }
+    };
+    if (v === "on") {
+      cfg.enabled = true;
+      if (await save()) await send(`✅ Antitagme ON\nReply text: ${cfg.text}`);
       return { __done: true, value: (true) };
     }
-    await send(`🏷️ Antitagme: *${cfg.enabled ? "ON" : "OFF"}*\nText: ${cfg.text}\nUsage: .antitagme on|off|set <text>`);
+    if (v === "off") {
+      cfg.enabled = false;
+      if (await save()) await send("✅ Antitagme OFF");
+      return { __done: true, value: (true) };
+    }
+    if (v === "set") {
+      // Take the text from the ORIGINAL message so new lines / spacing / emojis are kept
+      let t = String(body || "").replace(/^\S+\s+set\b[ \t]*/i, "").trim();
+      if (!t) {
+        const q = getQuotedMsg(msg);
+        if (q) t = String(getText(q) || "").trim();
+      }
+      if (!t) { await send("❌ Sentence likho:\n.antitagme set <sentence>\n(ya kisi text message par reply karke .antitagme set)"); return { __done: true, value: (true) }; }
+      if (t.length > 1000) t = t.slice(0, 1000);
+      cfg.text = t;
+      cfg.enabled = true;
+      if (await save()) await send(`✅ Antitagme text set (ON):\n\n${t}`);
+      return { __done: true, value: (true) };
+    }
+    await send(`🏷️ Antitagme: *${cfg.enabled ? "ON" : "OFF"}*\nText: ${cfg.text}\n\nUsage: .antitagme on|off|set <text>`);
     return { __done: true, value: (true) };
-  
   }
 };

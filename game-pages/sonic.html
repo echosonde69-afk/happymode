@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>JOKER XD Speed Runner</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}html,body{margin:0;background:#07172d;color:#fff;font-family:system-ui,Arial,sans-serif}body{padding:9px}.card{max-width:520px;margin:auto;padding:12px;border:2px solid #38bdf8;border-radius:18px;background:linear-gradient(160deg,#102d53,#071326);box-shadow:0 10px 30px #0009}.top{display:flex;align-items:center;justify-content:space-between;gap:8px}.brand{font-size:10px;letter-spacing:2px;color:#7dd3fc;font-weight:900}.title{font-size:21px;font-weight:1000;margin-top:2px}.stats{display:flex;gap:6px}.stat{min-width:57px;text-align:center;padding:6px;border-radius:9px;background:#173d66;border:1px solid #2b6895;font-weight:900}.stat small{display:block;font-size:8px;color:#9bdcff;letter-spacing:1px}.stat b{font-size:14px}canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;margin-top:10px;border:2px solid #2c6a96;border-radius:12px;background:#75d9ff;touch-action:none}.controls{display:flex;gap:8px;margin-top:9px}.controls button{flex:1;padding:13px 5px;border:0;border-radius:11px;font-weight:900;font-size:14px;color:#07172d;background:linear-gradient(#b8f2ff,#38bdf8);box-shadow:0 4px #12608a;touch-action:manipulation}.controls button:active{transform:translateY(2px);box-shadow:0 2px #12608a}.controls .boost{background:linear-gradient(#e9c7ff,#a855f7);color:white;box-shadow:0 4px #6123a0}.overlay{position:relative;margin-top:-190px;margin-bottom:36px;display:flex;justify-content:center;pointer-events:none}.overlay.off{display:none}.panel{width:85%;padding:12px;border:1px solid #a5e7ff;border-radius:13px;background:#09294beF;text-align:center;pointer-events:auto}.panel h2{margin:0 0 5px;color:#ffe27a;font-size:20px}.panel p{font-size:12px;line-height:1.4;margin:5px 0 10px}.panel button{border:0;border-radius:9px;padding:10px 18px;font-weight:900;background:#ffe16b;color:#16263b}.foot{text-align:center;color:#9bbbd5;font-size:9px;letter-spacing:2px;margin-top:9px}@media(max-width:380px){.title{font-size:17px}.stat{min-width:48px;padding:5px}}
+</style>
+</head>
+<body>
+<div class="card">
+ <div class="top"><div><div class="brand">JOKER XD ARCADE</div><div class="title">⚡ SPEED RUNNER</div></div><div class="stats"><div class="stat"><small>SCORE</small><b id="score">0</b></div><div class="stat"><small>RINGS</small><b id="rings">0</b></div><div class="stat"><small>LIVES</small><b id="lives">3</b></div></div></div>
+ <canvas id="game" width="720" height="405"></canvas>
+ <div class="overlay" id="overlay"><div class="panel"><h2 id="panelTitle">READY, RUNNER?</h2><p id="panelText">Jump over blocks, collect rings and survive as long as you can.</p><button id="start">▶ START GAME</button></div></div>
+ <div class="controls"><button id="jump">⬆ JUMP</button><button class="boost" id="boost">⚡ BOOST</button><button id="pause">Ⅱ PAUSE</button></div>
+ <div class="foot">JOKER XD • IN-CHAT ARCADE</div>
+</div>
+<script>
+(()=>{
+const c=document.getElementById('game'),x=c.getContext('2d'),$=id=>document.getElementById(id),W=720,H=405,G=330;
+let mode='ready',last=0,score=0,rings=0,lives=3,speed=280,spawn=0,ringSpawn=0,boost=0,items=[],coins=[],dust=[],best=0;
+try{best=+(localStorage.getItem('zain_speed_best')||0)}catch(e){}
+const p={x:92,y:G-48,w:34,h:48,vy:0,ground:true,shield:0};
+function hud(){$('score').textContent=Math.floor(score);$('rings').textContent=rings;$('lives').textContent=lives}
+function box(a,b,color,r=5){x.fillStyle=color;x.beginPath();x.roundRect(a,b,1,1,r);x.fill()}
+function draw(dt=0){let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#63c9ff');g.addColorStop(1,'#e3faff');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.fillStyle='#8bd59b';for(let i=0;i<8;i++){let xx=(i*120-(score*1.2)%120);x.beginPath();x.arc(xx,285,80,Math.PI,0);x.fill()}
+ x.fillStyle='#267447';x.fillRect(0,G,W,H-G);x.fillStyle='#b7f18b';x.fillRect(0,G,W,8);x.fillStyle='#e8ffc2';for(let i=0;i<12;i++)x.fillRect((i*80-(score*3)%80),G+25,35,5);
+ coins.forEach(o=>{x.strokeStyle='#ffcf32';x.lineWidth=6;x.beginPath();x.arc(o.x,o.y,10,0,7);x.stroke();x.fillStyle='#fff2a6';x.fillRect(o.x-2,o.y-6,4,12)});
+ items.forEach(o=>{x.fillStyle=o.kind==='spike'?'#d94848':'#b45b2b';if(o.kind==='spike'){x.beginPath();x.moveTo(o.x,o.y+o.h);x.lineTo(o.x+o.w/2,o.y);x.lineTo(o.x+o.w,o.y+o.h);x.fill()}else{x.fillRect(o.x,o.y,o.w,o.h);x.strokeStyle='#ffd18a';x.lineWidth=3;x.strokeRect(o.x+4,o.y+4,o.w-8,o.h-8)}});
+ if(p.shield<=0||Math.floor(performance.now()/90)%2===0){x.save();x.translate(p.x,p.y);x.fillStyle='#0787e8';x.beginPath();x.roundRect(0,8,p.w,p.h-8,13);x.fill();x.fillStyle='#27c4ff';x.beginPath();x.arc(p.w/2,13,16,Math.PI,0);x.fill();x.fillStyle='#fff';x.beginPath();x.ellipse(22,15,5,7,0,0,7);x.fill();x.fillStyle='#092544';x.fillRect(23,13,3,5);x.fillStyle='#132e4d';x.fillRect(-3,p.h-5,18,7);x.fillRect(19,p.h-5,19,7);x.restore()}
+ dust.forEach(d=>{x.globalAlpha=Math.max(0,d.life);x.fillStyle='#fff';x.fillRect(d.x,d.y,4,4);x.globalAlpha=1});
+}
+function reset(){score=0;rings=0;lives=3;speed=280;spawn=.7;ringSpawn=.5;boost=0;items=[];coins=[];dust=[];p.y=G-p.h;p.vy=0;p.ground=true;p.shield=0;hud()}
+function jump(){if(mode!=='run'||!p.ground)return;p.vy=-620;p.ground=false}
+function boostRun(){if(mode==='run'&&boost<=0)boost=2.2}
+function finish(){mode='over';try{best=Math.max(best,Math.floor(score));localStorage.setItem('zain_speed_best',best)}catch(e){}$('panelTitle').textContent='RUN OVER';$('panelText').textContent=`Score: ${Math.floor(score)} • Rings: ${rings} • Best: ${best}`;$('start').textContent='↻ PLAY AGAIN';$('overlay').classList.remove('off')}
+function tick(t){if(mode!=='run')return;let dt=Math.min((t-last)/1000||0,.032);last=t;speed=Math.min(560,speed+dt*8);if(boost>0)boost=Math.max(0,boost-dt);let v=speed*(boost>0?1.55:1);score+=dt*v*.08;p.vy+=1550*dt;p.y+=p.vy*dt;if(p.y+p.h>=G){p.y=G-p.h;p.vy=0;p.ground=true}p.shield=Math.max(0,p.shield-dt);
+ spawn-=dt;if(spawn<=0){let kind=Math.random()<.3?'spike':'block',h=kind==='spike'?34:35+Math.random()*24;items.push({x:W+20,y:G-h,w:kind==='spike'?35:34,h,kind});spawn=Math.max(.55,1.15-Math.min(.4,(speed-280)/700)+Math.random()*.45)}
+ ringSpawn-=dt;if(ringSpawn<=0){for(let i=0;i<3;i++)coins.push({x:W+20+i*32,y:G-85-Math.random()*65});ringSpawn=1.7+Math.random()*1.1}
+ items.forEach(o=>{o.x-=v*dt;if(p.shield<=0&&p.x+p.w-5>o.x+5&&p.x+5<o.x+o.w-5&&p.y+p.h-4>o.y+5){lives--;p.shield=1.15;o.x=-100;if(lives<=0){hud();finish()}}});items=items.filter(o=>o.x+o.w>0);
+ coins.forEach(o=>{o.x-=v*dt;if(Math.abs(o.x-(p.x+p.w/2))<22&&Math.abs(o.y-(p.y+p.h/2))<30){o.x=-100;rings++;score+=20}});coins=coins.filter(o=>o.x>0);
+ draw(dt);hud();if(mode==='run')requestAnimationFrame(tick)}
+$('start').onclick=()=>{if(mode==='pause'){mode='run';$('overlay').classList.add('off');last=performance.now();requestAnimationFrame(tick);return}reset();mode='run';$('overlay').classList.add('off');last=performance.now();requestAnimationFrame(tick)};
+$('jump').onpointerdown=e=>{e.preventDefault();jump()};$('boost').onpointerdown=e=>{e.preventDefault();boostRun()};$('pause').onclick=()=>{if(mode==='run'){mode='pause';$('panelTitle').textContent='PAUSED';$('panelText').textContent='Take a break, then resume your run.';$('start').textContent='▶ RESUME';$('overlay').classList.remove('off')}else if(mode==='pause'){mode='run';$('overlay').classList.add('off');last=performance.now();requestAnimationFrame(tick)}};
+c.onpointerdown=()=>jump();window.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}if(e.code==='ShiftLeft'||e.code==='ArrowRight')boostRun()});draw();hud();
+})();
+</script>
+</body></html>

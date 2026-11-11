@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>JOKER XD Quiz Time</title><style>*{box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}body{margin:0;padding:10px;background:#0b1220;color:#eef;font-family:system-ui,Arial,sans-serif}.card{max-width:420px;margin:auto;padding:12px;border:2px solid #38bdf8;border-radius:18px;background:linear-gradient(160deg,#12294a,#08111f);box-shadow:0 10px 30px #0009}.brand{text-align:center;font-size:10px;letter-spacing:2px;color:#7dd3fc;font-weight:900}.title{text-align:center;font-size:21px;font-weight:900;margin:2px 0 8px}.stats{display:flex;gap:6px;margin-bottom:8px}.stat{flex:1;text-align:center;padding:6px;border-radius:9px;background:#173d66;border:1px solid #2b6895}.stat small{display:block;font-size:8px;color:#9bdcff;letter-spacing:1px}.stat b{font-size:16px}canvas{display:block;width:100%;max-width:340px;margin:auto;border:2px solid #2c6a96;border-radius:12px;touch-action:none}.btn{border:0;border-radius:11px;padding:11px 8px;font-weight:900;font-size:16px;color:#06202f;background:linear-gradient(#7dd3fc,#38bdf8);box-shadow:0 3px #1d6b94;cursor:pointer;touch-action:manipulation}.btn:active{transform:translateY(2px);box-shadow:0 1px #1d6b94}.btn:disabled{opacity:.6}.row{display:flex;gap:7px;margin-top:9px}.row .btn{flex:1}.msg{min-height:20px;text-align:center;margin-top:8px;font-weight:800;color:#fde68a;font-size:14px}.grid{display:grid;gap:6px;margin:auto}</style></head><body><div class="card"><div class="brand">JOKER XD ARCADE</div><div class="title">Quiz Time</div><div class="stats"><div class="stat"><small>SCORE</small><b id="sc">0</b></div><div class="stat"><small>BEST</small><b id="bs">0</b></div></div><style>.bar{height:7px;background:#173d66;border-radius:5px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;width:100%;background:#facc15}.q{font-weight:800;font-size:16px;min-height:44px;margin:6px 0}.opt{display:block;width:100%;margin-top:7px;text-align:left;font-size:15px}</style>
+<div class=q id=q>Tap START for 10 questions!</div><div class=bar><i id=t></i></div><div id=o></div><div class="row"><button class="btn" id="go">START</button></div><div class="msg" id="msg"></div></div><script>const $=i=>document.getElementById(i);let best=0,score=0;function S(n){score=n;$('sc').textContent=n;if(n>best){best=n;$('bs').textContent=n}}function M(t){$('msg').textContent=t}
+const Q=[
+["Capital of Pakistan?",["Islamabad","Karachi","Lahore","Peshawar"],0],
+["Largest planet in our solar system?",["Saturn","Jupiter","Neptune","Earth"],1],
+["How many Surahs are in the Quran?",["99","110","114","120"],2],
+["Who is known as the Poet of the East?",["Allama Iqbal","Faiz Ahmed Faiz","Ghalib","Mir Taqi Mir"],0],
+["Chemical symbol of gold?",["Ag","Au","Go","Gd"],1],
+["Longest river in Pakistan?",["Jhelum","Ravi","Indus","Chenab"],2],
+["How many bones does an adult human have?",["186","206","226","256"],1],
+["Which planet is the Red Planet?",["Venus","Mars","Mercury","Jupiter"],1],
+["Fastest land animal?",["Lion","Horse","Cheetah","Leopard"],2],
+["Largest ocean on Earth?",["Atlantic","Indian","Arctic","Pacific"],3],
+["Which month of the Islamic calendar is Ramadan?",["7th","8th","9th","10th"],2],
+["How many continents are there?",["5","6","7","8"],2],
+["Hardest natural substance?",["Gold","Iron","Diamond","Quartz"],2],
+["Capital of Japan?",["Kyoto","Osaka","Tokyo","Seoul"],2],
+["Smallest prime number?",["0","1","2","3"],2],
+["H2O is the formula of?",["Salt","Water","Oxygen","Acid"],1],
+["Who founded Pakistan?",["Liaquat Ali Khan","M. A. Jinnah","Allama Iqbal","Sir Syed"],1],
+["Pakistan won the T20 World Cup in?",["2007","2009","2012","2016"],1],
+["Number of sides of a hexagon?",["5","6","7","8"],1],
+["Which gas do plants absorb?",["Oxygen","Nitrogen","Carbon dioxide","Helium"],2]];
+let qs,i=0,tm,left;
+function show(){if(i>=qs.length){clearInterval(tm);$('q').textContent='Finished! Score '+score+'/'+qs.length;$('o').innerHTML='';$('t').style.width='0';M(score>=8?'🏆 Genius!':score>=5?'👍 Nice!':'📚 Keep learning!');$('go').textContent='PLAY AGAIN';return}
+ const [q,o,a]=qs[i];$('q').textContent=(i+1)+'/'+qs.length+'  '+q;$('o').innerHTML='';
+ o.map((_,k)=>k).sort(()=>Math.random()-.5).forEach(k=>{const b=document.createElement('button');b.className='btn opt';b.textContent=o[k];b.dataset.ok=k===a?1:0;b.onclick=()=>pick(b);$('o').appendChild(b)});
+ left=10;$('t').style.width='100%';clearInterval(tm);tm=setInterval(()=>{left-=.1;$('t').style.width=left*10+'%';if(left<=0)pick(null)},100)}
+function pick(b){clearInterval(tm);[...$('o').children].forEach(e=>{e.disabled=true;if(e.dataset.ok==='1')e.style.background='#4ade80'});
+ if(b){if(b.dataset.ok==='1')S(score+1);else b.style.background='#f87171'}setTimeout(()=>{i++;show()},800)}
+function start(){qs=Q.slice().sort(()=>Math.random()-.5).slice(0,10);i=0;S(0);M('');show()}
+$('go').onclick=start;</script></body></html>
